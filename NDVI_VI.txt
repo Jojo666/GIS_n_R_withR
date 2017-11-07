@@ -1,0 +1,26 @@
+####################################################
+library(RStoolbox)
+library(raster)
+library(ggplot2)
+
+setwd("F:\\Into_2_RS-Udemy course\\data\\china\\LT05_L1TP_130045_20060424_20161122_01_T1")
+
+meta2011=readMeta("LT05_L1TP_130045_20060424_20161122_01_T1_MTL.txt")
+
+p22_2011=stackMeta(meta2011)
+
+##calculate NDVI
+## Can also be computed on uncorrected data
+
+ndvi=spectralIndices(p22_2011,red="B3_dn",nir="B4_dn",indices="NDVI")
+
+#### VIs
+
+#### convert DN to reflectance
+
+lnds_ref=radCor(p22_2011,meta2011,method="apref")
+
+SI=spectralIndices(lnds_ref,red="B3_tre",nir="B4_tre")
+plot(SI)
+
+ggR(ndvi,geom_raster=TRUE)+scale_fill_gradient(colours=c("blue","red"))
