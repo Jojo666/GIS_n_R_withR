@@ -1,0 +1,33 @@
+######################################################################
+###############
+## atmospheric correction of landsat data in R
+
+library(RStoolbox)
+
+setwd("F:\\Into_2_RS-Udemy course\\data\\china\\LT05_L1TP_130045_20060424_20161122_01_T1")
+
+meta2011=readMeta("LT05_L1TP_130045_20060424_20161122_01_T1_MTL.txt")
+
+p22_2011=stackMeta(meta2011)
+
+dn2rad=meta2011$CALRAD
+
+dn2rad
+
+##convert DN to top-of-atmosphere radiance
+
+p22_2011_rad=radCor(p22_2011,metaData = meta2011,method="rad")
+
+p22_2011_rad
+
+
+#obtain TOA: top of the atmosphere reflectance 
+p22_2011_ref=radCor(p22_2011,metaData = meta2011,method="apref")
+
+#haze correction
+
+haze=estimateHaze(p22_2011,darkProp = 0.01, hazeBands = c("B1_dn","B2_dn","B3_dn","B4_dn"))
+
+#DOS
+
+p22_2011_dos=radCor(p22_2011,metaData = meta2011,darkProp = 0.01,method="dos")
